@@ -1,7 +1,9 @@
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.motor.Motor;
 import lejos.hardware.port.MotorPort;
 import lejos.robotics.navigation.DifferentialPilot;
+import lejos.utility.Delay;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +15,14 @@ public class MainRobot {
 	
 	public MainRobot() {
 		pilot = new DifferentialPilot(1.19f, 7.8f, Motor.B, Motor.C, true);
-		penMotor = new EV3MediumRegulatedMotor(MotorPort.D);
-		initPilot();
+//		penMotor = new EV3MediumRegulatedMotor(MotorPort.D);
+//		initPilot();
 		processFileData();
 	}
 
 	private void initPilot() {
-		pilot.setTravelSpeed(pilot.getMaxTravelSpeed() / 4);
-		pilot.setRotateSpeed(pilot.getRotateMaxSpeed() / 6);
+		pilot.setLinearSpeed(pilot.getMaxLinearSpeed() / 4);
+		pilot.setAngularSpeed(pilot.getMaxAngularSpeed() / 6);
 	}
 
 	/**
@@ -44,9 +46,9 @@ public class MainRobot {
 		//TODO: add check for current pen angel
 		//this is important because we don't want to mess up the pen 
 		if (penCommand.getPenDirection().equals("PU")) {
-			penMotor.rotate(20);
+//			penMotor.rotate(20);
 		} else if (penCommand.getPenDirection().equals("PD")) {
-			penMotor.rotate(-20);
+//			penMotor.rotate(-20);
 		}
 	}
 	
@@ -68,7 +70,7 @@ public class MainRobot {
 			
 			//create the correct type of command
 			String[] dataLineArray = dataLine.split(",");
-			if (dataLineArray[0].equals("PU") || dataLineArray[0].equals("PU")) {
+			if (dataLineArray[0].equals("PU") || dataLineArray[0].equals("PD")) {
 				command = new PenCommand(dataLineArray);
 			} else {
 				command = new Vector(dataLineArray);
@@ -80,6 +82,8 @@ public class MainRobot {
 	}
 
 	public static void main(String[] args) {
+		LCD.drawString("At your command!", 0, 4);
+		Delay.msDelay(3000);
 		new MainRobot();
 
 	}

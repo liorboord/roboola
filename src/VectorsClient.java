@@ -2,6 +2,8 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.Socket;
 
+import lejos.hardware.lcd.LCD;
+
 public class VectorsClient {
 
     private String fetchFromHttp(String url, String path) {
@@ -33,12 +35,12 @@ public class VectorsClient {
         }
 
         String result = sb.toString();
-        return result.substring(result.indexOf("close")+"close".length()+4, result.length());
+        return result.substring(result.indexOf("StartMessage")+"StartMessage".length(), result.length());
     }
 
     public boolean shouldGo(String url) {
         String go = fetchFromHttp(url, "/go");
-        System.out.println("GO " + go);
+		LCD.drawString("Got GO " + go, 0, 5);
         if ("1".equals(go)) {
             return true;
         }

@@ -14,15 +14,24 @@ public class MainRobot {
 	EV3MediumRegulatedMotor penMotor;
 	
 	public MainRobot() {
-		pilot = new DifferentialPilot(1.19f, 7.8f, Motor.B, Motor.C, true);
+		pilot = new DifferentialPilot(1.19f, 6.3f, Motor.B, Motor.C, true);
 //		penMotor = new EV3MediumRegulatedMotor(MotorPort.D);
-//		initPilot();
+		initPilot();
+		
+		boolean go = false;
+		VectorsClient govc = new VectorsClient();
+		LCD.drawString("Waiting for GO...", 0, 4);
+		while (!go) {
+			go = govc.shouldGo("ec2-50-16-5-181.compute-1.amazonaws.com");
+			LCD.drawString("Got GO!", 0, 5);			
+		}
 		processFileData();
 	}
 
 	private void initPilot() {
-		pilot.setLinearSpeed(pilot.getMaxLinearSpeed() / 4);
-		pilot.setAngularSpeed(pilot.getMaxAngularSpeed() / 6);
+		Motor.D.rotateTo(20);
+//		pilot.setLinearSpeed(pilot.getMaxLinearSpeed() / 4);
+//		pilot.setAngularSpeed(pilot.getMaxAngularSpeed() / 6);
 	}
 
 	/**
@@ -46,9 +55,9 @@ public class MainRobot {
 		//TODO: add check for current pen angel
 		//this is important because we don't want to mess up the pen 
 		if (penCommand.getPenDirection().equals("PU")) {
-//			penMotor.rotate(20);
+			Motor.D.rotateTo(20);
 		} else if (penCommand.getPenDirection().equals("PD")) {
-//			penMotor.rotate(-20);
+			Motor.D.rotateTo(-20);
 		}
 	}
 	
@@ -58,13 +67,29 @@ public class MainRobot {
 		//this is some mock data for the data file
 		List<String> data = new ArrayList<String>();
 
-		data.add(new String("fwd,10,90"));
+		
+		/*****/
+				
+		VectorsClient vc = new VectorsClient();
+		String result = vc.getVectors("ec2-50-16-5-181.compute-1.amazonaws.com");
+
+		String[] vectorsArray = result.split("\n");
+
+		int row=0;
+		for (String vector: vectorsArray) {
+			LCD.drawString("" + vector, 0, row++);
+			data.add(vector);
+		}
+		/*****
+		data.add("PD");
+		data.add(new String("fwd,1,360"));
 		data.add("PU");
+		
 		data.add(new String("fwd,10,90"));
 		data.add("PD");
 		data.add(new String("fwd,10,90"));
 		data.add(new String("fwd,10,90"));
-
+		 */
 		for (String dataLine : data) {
 			Command command;
 			
@@ -73,6 +98,8 @@ public class MainRobot {
 			if (dataLineArray[0].equals("PU") || dataLineArray[0].equals("PD")) {
 				command = new PenCommand(dataLineArray);
 			} else {
+				//LCD.drawString("dlA[0]="+dataLineArray[0] + " len= "+dataLineArray.length, 0, 4);
+				//Delay.msDelay(10000);
 				command = new Vector(dataLineArray);
 			}
 			commands.add(command);
@@ -83,7 +110,7 @@ public class MainRobot {
 
 	public static void main(String[] args) {
 		LCD.drawString("At your command!", 0, 4);
-		Delay.msDelay(3000);
+		Delay.msDelay(400);
 		new MainRobot();
 
 	}

@@ -14,7 +14,7 @@ public class MainRobot {
 	EV3MediumRegulatedMotor penMotor;
 	
 	public MainRobot() {
-		pilot = new DifferentialPilot(1.19f, 6.3f, Motor.B, Motor.C, true);
+		pilot = new DifferentialPilot(11.9f, 63.0f, Motor.B, Motor.C, true);
 //		penMotor = new EV3MediumRegulatedMotor(MotorPort.D);
 		initPilot();
 		
@@ -82,13 +82,13 @@ public class MainRobot {
 		}
 		/*****
 		data.add("PD");
-		data.add(new String("fwd,1,360"));
+		data.add(new String("fwd,80,45"));
 		data.add("PU");
 		
-		data.add(new String("fwd,10,90"));
+		data.add(new String("fwd,30,45"));
 		data.add("PD");
-		data.add(new String("fwd,10,90"));
-		data.add(new String("fwd,10,90"));
+		data.add(new String("fwd,60,25"));
+		data.add(new String("fwd,50,45"));
 		 */
 		for (String dataLine : data) {
 			Command command;
